@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mystatefulset
+spec:
+  selector:
+    matchLabels:
+      app: az-devops-api-pod
+  serviceName: az-devops-api-svc
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: az-devops-api-pod
+    spec:
+      containers:
+      - name: az-devops-api-svc
+        image: francomoreno/azure-devops-api-v2:2.0
+        ports:
+        - containerPort: 8000
+          name: web
+        volumeMounts:
+        - name: az-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: az-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 50Gi
